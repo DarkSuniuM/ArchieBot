@@ -1,6 +1,7 @@
 import os
 
-from peewee import SqliteDatabase, Model, IntegerField, CompositeKey, BooleanField
+from peewee import SqliteDatabase, Model, CompositeKey
+from peewee import IntegerField, BooleanField
 
 from config import BASE_DIR
 
