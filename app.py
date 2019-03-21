@@ -3,7 +3,6 @@ from random import randint, sample, shuffle
 import logging
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
-from telegram.utils.helpers import escape_markdown
 from telegram.ext import CallbackQueryHandler, Filters, MessageHandler, Updater
 
 from config import PROXY, TOKEN
@@ -53,7 +52,9 @@ def checkUser(bot, update):
     captcha, answer, buttons = captchaGenerator(user_id, group_id)
     markup = InlineKeyboardMarkup([buttons])
     message = f"درود {update.message.from_user.mention_markdown()},\n" \
-        "جهت جلوگیری از ورود ربات‌ها، دسترسی ارسال پیام از کاربران، تا زمانی که خود را تایید نکنند گرفته می‌شود\n" \
+        "جهت جلوگیری از ورود ربات‌ها،" \
+        "دسترسی ارسال پیام از کاربران،" \
+        "تا زمانی که خود را تایید نکنند گرفته می‌شود\n" \
         "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید\n" \
         f"`{captcha} = ?`\n" \
         "دکمه‌ای که پاسخ صحیح بر روی آن ردج شده، انتخاب کنید."
@@ -82,8 +83,9 @@ def checkAnswer(bot, update):
 def err_handler(bot, update, error):
     try:
         raise error
-    except Exception as e:
+    except Exception:
         pass
+
 
 updater = Updater(TOKEN,
                   request_kwargs={'proxy_url': PROXY} if PROXY else None)
@@ -99,9 +101,9 @@ updater.dispatcher.add_handler(
 )
 updater.dispatcher.add_error_handler(err_handler)
 
-# logging.basicConfig(
-#         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        # level=logging.ERROR)
+logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.INFO)
 
 updater.start_polling()
 updater.idle()
