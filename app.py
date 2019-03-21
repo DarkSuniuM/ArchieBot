@@ -17,7 +17,7 @@ def captchaGenerator(user_id, group_id):
     all_answers = answerGenerator(correct_answer, 4)
     inline_buttons = []
     for answer in all_answers:
-        data = f"{user_id},{group_id},{answer == correct_answer}"
+        data = f"{user_id},{group_id},{int(answer == correct_answer)}"
         button = InlineKeyboardButton(answer, callback_data=data)
         inline_buttons.append(button)
     return (equation, correct_answer, inline_buttons)
