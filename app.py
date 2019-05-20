@@ -74,7 +74,7 @@ def checkAnswer(bot, update):
         return
     user = User.get(user_id=user_id, group_id=group_id)
     user.is_active = 1
-    bot.restrictChatMember(group_id, user_id, can_send_messages=1)
+    bot.promoteChatMember(group_id, user_id, can_send_messages=1)
     user.save()
     query.answer("✅ You're account has been activated!")
     bot.deleteMessage(query.message.chat.id, query.message.message_id)
@@ -83,8 +83,8 @@ def checkAnswer(bot, update):
 def err_handler(bot, update, error):
     try:
         raise error
-    except Exception:
-        pass
+    except Exception as e:
+        print(repr(e))
 
 
 updater = Updater(TOKEN,
