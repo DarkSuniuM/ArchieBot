@@ -46,7 +46,7 @@ def checkUser(bot, update):
     user_id = update.message.from_user.id
     message_time = update.message.date.timestamp()
 
-    if message_time + 5 < dt.datetime.utcnow():
+    if message_time + 5 < dt.datetime.utcnow().timestamp():
         return
     if user_id == bot.id:
         return
