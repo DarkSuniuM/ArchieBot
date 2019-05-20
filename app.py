@@ -1,6 +1,7 @@
 from random import randint, sample, shuffle
 
 import logging
+import datetime as dt
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import CallbackQueryHandler, Filters, MessageHandler, Updater
@@ -43,6 +44,10 @@ def kickBots(bot, update):
 def checkUser(bot, update):
     group_id = update.message.chat.id
     user_id = update.message.from_user.id
+    message_time = update.message.date.timestamp()
+
+    if message_time + 5 < dt.datetime.utcnow():
+        return
     if user_id == bot.id:
         return
     user, created = User.get_or_create(user_id=user_id, group_id=group_id)
