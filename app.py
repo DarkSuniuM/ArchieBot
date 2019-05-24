@@ -62,7 +62,7 @@ def checkUser(bot, update):
         "تا زمانی که خود را تایید نکنند گرفته می‌شود\n" \
         "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید\n" \
         f"`{captcha} = ?`\n" \
-        "دکمه‌ای که پاسخ صحیح بر روی آن ردج شده، انتخاب کنید."
+        "دکمه‌ای که پاسخ صحیح بر روی آن درج شده، انتخاب کنید."
     bot.sendMessage(group_id, message,
                     reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
     bot.deleteMessage(group_id, update.message.message_id)
