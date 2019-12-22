@@ -46,6 +46,15 @@ def checkUser(bot, update):
     user_id = update.message.from_user.id
     message_time = update.message.date.timestamp()
 
+
+    if user_id == 777000:
+        # Telegram uses it's official account with 
+        # the id '777000' to forward channel messages
+        # to linked group,
+        # Therefor We need to check if the message
+        # came from this special '777000' id or not!
+        return
+
     if message_time + 5 < dt.datetime.now().timestamp():
         return
     if user_id == bot.id:
