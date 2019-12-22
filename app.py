@@ -65,15 +65,16 @@ def checkUser(bot, update):
     bot.restrictChatMember(group_id, user_id, can_send_messages=0)
     captcha, answer, buttons = captchaGenerator(user_id, group_id)
     markup = InlineKeyboardMarkup([buttons])
-    message = f"درود {update.message.from_user.mention_markdown()},\n" \
-        "جهت جلوگیری از ورود ربات‌ها،" \
-        "دسترسی ارسال پیام از کاربران،" \
-        "تا زمانی که خود را تایید نکنند گرفته می‌شود\n" \
-        "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید\n" \
-        f"`{captcha} = ?`\n" \
+    name = update.message.from_user.first_name.replace('<', '&lt;').replace('>', '&gt;')
+    message = f"درود {update.message.from_user.mention_markdown(name=name)},\n" \
+        "جهت جلوگیری از ورود ربات‌ها، " \
+        "دسترسی ارسال پیام از کاربران، " \
+        "تا زمانی که خود را تایید نکنند گرفته می‌شود</br>" \
+        "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید</br>" \
+        f"<pre>{captcha} = ?</pre></br>" \
         "دکمه‌ای که پاسخ صحیح بر روی آن درج شده، انتخاب کنید."
     bot.sendMessage(group_id, message,
-                    reply_markup=markup, parse_mode=ParseMode.MARKDOWN)
+                    reply_markup=markup, parse_mode=ParseMode.HTML)
     bot.deleteMessage(group_id, update.message.message_id)
 
 
