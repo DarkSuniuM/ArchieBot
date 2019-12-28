@@ -7,10 +7,8 @@ def cli():
 
 @click.command('generate-db')
 def generateDatabase():
-    from models import db
-    from models import User
-    db.connect()
-    db.create_tables([User])
+    from models import Base
+    Base.metadata.create_all()
 
 
 cli.add_command(generateDatabase)
