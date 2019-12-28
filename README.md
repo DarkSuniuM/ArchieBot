@@ -11,7 +11,8 @@ A Telegram bot to prevent spamming ads by MTProto (CLI) and API Bots.
 1. Activate the virtual environment using `source venv/bin/activate`.
 1. Install requirements using `pip install -r requirements.txt`.
 1. Rename `.env.example` to `.env` and fill in the data.
-1. Initialize the database using `python archie.py generate-db`.
+1. Initialize the database using `python archie.py create-db`.
 
 ### 3. Usage
 - Run the `app.py` file, you can use something like `tmux` or `screen` to run it in background.
+- Put automated file into a scheduled job runner like `crontab` so it can delete old messages.
