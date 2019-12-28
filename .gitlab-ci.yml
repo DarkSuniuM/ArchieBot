@@ -3,8 +3,9 @@ stages:
 
 deploy_job:
   stage: deploy
-  scripts:
+  script:
     - pip3 install -U fandogh-cli
     - fandogh-cli login --username $FANDOGH_USERNAME --password $FANDOGH_PASSWORD
     - echo "BOT_TOKEN=\"$APP_BOT_TOKEN\"\nDB_URI=\"$APP_DB_URI\"" > .env
+    - fandogh image publish -v head
   when: manual
