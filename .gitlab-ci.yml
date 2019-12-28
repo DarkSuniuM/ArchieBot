@@ -10,5 +10,6 @@ deploy_job:
     - COLLECT_ERROR=True fandogh login --username $FANDOGH_USERNAME --password $FANDOGH_PASSWORD
     - echo "BOT_TOKEN=\"$APP_BOT_TOKEN\"\nDB_URI=\"$APP_DB_URI\"" > .env
     - fandogh namespace active --name=archlinux
+    - fandogh image init --name archie_bot
     - fandogh image publish -v head
   when: manual
