@@ -20,9 +20,10 @@ RUN crontab temp_cron
 RUN rm temp_cron
 # Set crontab
 
+# Do the database upgrades
+
 ENTRYPOINT [ "python3" ]
 
-# Do the database upgrades
-RUN alembic upgrade head
+CMD ["alembic", "upgrade" ,"head"]
 
 CMD [ "app.py" ]
