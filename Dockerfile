@@ -12,8 +12,19 @@ RUN pip3 install -r requirements.txt
 
 COPY . /app
 
+# Set crontab
+RUN crontab -l > temp_cron
+
+RUN echo '*/30 * * * * cd /app && python3 automated.py' >> temp_cron
+
+RUN crontab temp_cron
+
+RUN rm temp_cron
+# Set crontab
+
 ENTRYPOINT [ "python3" ]
 
-CMD [ "archie.py generate-db" ]
+# Do the database upgrades
+RUN "alembic upgrade head"
 
 CMD [ "app.py" ]
