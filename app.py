@@ -2,12 +2,17 @@ from random import randint, sample, shuffle
 
 import logging
 import datetime as dt
+import traceback
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, ChatPermissions
 from telegram.ext import CallbackQueryHandler, Filters, MessageHandler, Updater
 
 from config import PROXY, TOKEN
 from models import User
+
+
+restricted_permissions = ChatPermissions(can_send_messages=False)
+unrestricted_permissions = ChatPermissions(can_send_messages=True)
 
 
 def captchaGenerator(user_id, group_id):
@@ -18,7 +23,7 @@ def captchaGenerator(user_id, group_id):
     all_answers = answerGenerator(correct_answer, 4)
     inline_buttons = []
     for answer in all_answers:
-        data = f"{user_id},{group_id},{int(answer == correct_answer)}"
+        data = f"{user_id},{group_id},{int(answer == correct_answer) or -answer}"
         button = InlineKeyboardButton(answer, callback_data=data)
         inline_buttons.append(button)
     return (equation, correct_answer, inline_buttons)
@@ -33,17 +38,18 @@ def answerGenerator(correct_answer, length):
     return random_generated_list
 
 
-def kickBots(bot, update):
+def kickBots(update, context):
     for new_user in update.message.new_chat_members:
-        if new_user.is_bot and new_user.id != bot.id:
-            bot.kickChatMember(update.message.chat.id, new_user.id, timeout=5)
+        if new_user.is_bot and new_user.id != context.bot.id:
+            context.bot.kickChatMember(update.message.chat.id, new_user.id, timeout=5)
         if not new_user.is_bot:
-            checkUser(bot, update)
+            checkUser(update, context)
 
 
-def checkUser(bot, update):
+def checkUser(update, context):
     group_id = update.message.chat.id
     user_id = update.message.from_user.id
+    print(user_id)
     message_time = update.message.date.timestamp()
 
 
@@ -54,56 +60,59 @@ def checkUser(bot, update):
         # Therefor We need to check if the message
         # came from this special '777000' id or not!
         return
-
-    if message_time + 5 < dt.datetime.now().timestamp():
+    if message_time + 5 < dt.datetime.utcnow().timestamp():
         return
-    if user_id == bot.id:
+    if user_id == context.bot.id:
         return
-    user, created = User.get_or_create(user_id=user_id, group_id=group_id)
+    user = User.get_or_create(user_tid=user_id, group_tid=group_id)
     if user.is_active:
         return
-    bot.restrictChatMember(group_id, user_id, can_send_messages=0)
+    context.bot.restrictChatMember(group_id, user_id, restricted_permissions)
+    print(f"Restricted {user_id}")
     captcha, answer, buttons = captchaGenerator(user_id, group_id)
     markup = InlineKeyboardMarkup([buttons])
     name = update.message.from_user.first_name.replace('<', '&lt;').replace('>', '&gt;')
-    message = f"درود {update.message.from_user.mention_markdown(name=name)},\n" \
+    message = f"درود {update.message.from_user.mention_html(name=name)},\n" \
         "جهت جلوگیری از ورود ربات‌ها، " \
         "دسترسی ارسال پیام از کاربران، " \
-        "تا زمانی که خود را تایید نکنند گرفته می‌شود</br>" \
-        "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید</br>" \
-        f"<pre>{captcha} = ?</pre></br>" \
+        "تا زمانی که خود را تایید نکنند گرفته می‌شود\n" \
+        "جهت تایید کردن حساب‌کاربری خود، به معادله زیر پاسخ دهید\n" \
+        f"<pre>{captcha} = ?</pre>\n" \
         "دکمه‌ای که پاسخ صحیح بر روی آن درج شده، انتخاب کنید."
-    bot.sendMessage(group_id, message,
-                    reply_markup=markup, parse_mode=ParseMode.HTML)
-    bot.deleteMessage(group_id, update.message.message_id)
+    message = context.bot.sendMessage(group_id, message,
+                                      reply_markup=markup,
+                                      parse_mode=ParseMode.HTML)
+    user.set_pending(message.message_id)
+    context.bot.deleteMessage(group_id, update.message.message_id)
 
 
-def checkAnswer(bot, update):
+def checkAnswer(update, context):
     query = update.callback_query
     user_id, group_id, status = [int(value) for value in query.data.split(',')]
     if user_id != query.from_user.id:
         query.answer("❌ You can't activate someone else's account!")
         return
-    if not status:
+    if status != 1:
         query.answer("❌ Wrong Answer!")
         return
-    user = User.get(user_id=user_id, group_id=group_id)
-    user.is_active = 1
-    bot.promoteChatMember(group_id, user_id, can_send_messages=1)
+    user = User.get(user_tid=user_id, group_tid=group_id)
+    user.activate()
+    context.bot.restrictChatMember(group_id, user_id, unrestricted_permissions)
     user.save()
     query.answer("✅ You're account has been activated!")
-    bot.deleteMessage(query.message.chat.id, query.message.message_id)
+    context.bot.deleteMessage(query.message.chat.id, query.message.message_id)
 
 
-def err_handler(bot, update, error):
+def err_handler(update, context):
     try:
-        raise error
-    except Exception as e:
-        print(repr(e))
+        raise context.error
+    except Exception as error:
+        traceback.print_exc()
 
 
 updater = Updater(TOKEN,
-                  request_kwargs={'proxy_url': PROXY} if PROXY else None)
+                  request_kwargs={'proxy_url': PROXY} if PROXY else None,
+                  use_context=True)
 
 updater.dispatcher.add_handler(
     MessageHandler(Filters.status_update.new_chat_members, kickBots)
@@ -120,5 +129,7 @@ logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=logging.INFO)
 
-updater.start_polling()
-updater.idle()
+if __name__ == "__main__":
+
+    updater.start_polling()
+    updater.idle()
