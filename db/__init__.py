@@ -2,14 +2,15 @@
 
 from sqlalchemy.engine import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import Column, Integer
 
 from config import DB_URI
 
-db = create_engine(DB_URI)
+db = create_engine(DB_URI, convert_unicode=True, connect_args=dict(use_unicode=True))
 Base = declarative_base(db)
-Session = sessionmaker(db)
+session_factory = sessionmaker(db)
+Session = scoped_session(session_factory)
 session = Session()
 
 
