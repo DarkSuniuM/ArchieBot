@@ -8,6 +8,7 @@ import traceback as tb
 
 from telegram import ChatPermissions, InlineKeyboardMarkup, ParseMode
 
+from db import session
 from db.models import User
 
 from . import RESTRICTED_PERMISSIONS, UNRESTRICTED_PERMISSIONS
@@ -79,6 +80,7 @@ def check_answer(update, context):
 def error_handler(update, context):
     """Handle error."""
     try:
+        session.rollback()
         raise context.error
     except Exception as error:
         tb.print_exc()
