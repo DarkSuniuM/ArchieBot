@@ -3,30 +3,30 @@
 import logging
 import config
 
-print("=" * 25)
-print("Loading modules...")
-print("=" * 25)
-print("Loading configurations...")
-print("=" * 25)
-print(f"Path: {config.BASE_DIR}")
-print(f"Database: {config.DB_URI}")
-print(f"Bot Token: {config.TOKEN}")
-print("=" * 25)
+logging.info("=" * 25)
+logging.info("Loading modules...")
+logging.info("=" * 25)
+logging.info("Loading configurations...")
+logging.info("=" * 25)
+logging.info(f"Path: {config.BASE_DIR}")
+logging.info(f"Database: {config.DB_URI}")
+logging.info(f"Bot Token: {config.TOKEN}")
+logging.info("=" * 25)
 
 from bot import updater
-print("Updater Initialized")
-print("=" * 25)
+logging.info("Updater Initialized")
+logging.info("=" * 25)
 
 logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=logging.INFO)
 
-print("Starting polling...")
+logging.info("Starting polling...")
 updater.start_polling()
-print("Polling stared")
-print("=" * 25)
+logging.info("Polling stared")
+logging.info("=" * 25)
 updater.idle()
-print("=" * 25)
-print("Stopping the updater...")
+logging.info("=" * 25)
+logging.info("Stopping the updater...")
 updater.stop()
-print("=" * 25)
+logging.info("=" * 25)
