@@ -1,0 +1,10 @@
+kind: ExternalService
+name: archie-bot
+spec:
+  image: archie_bot:${VERSION}
+  env:
+    - name: DB_URI
+      secret: app-db-uri
+    - name: BOT_TOKEN
+      secret: app-bot-token
+  
