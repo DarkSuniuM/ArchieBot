@@ -4,6 +4,7 @@ stages:
   - deploy
 
 deploy_job:
+  cache: {}
   stage: deploy
   script:
     - pip3 install -U fandogh-cli
