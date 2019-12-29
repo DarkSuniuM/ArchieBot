@@ -15,5 +15,5 @@ deploy_job:
     - fandogh namespace active --name=archlinux
     - fandogh image init --name archie_bot
     - fandogh image publish -v $CI_COMMIT_SHORT_SHA
-    - fandogh service deploy --image archie_bot --version $CI_COMMIT_SHORT_SHA --name archie-bot --env DB_URI="$APP_DB_URI" --env BOT_TOKEN="$APP_BOT_TOKEN"
+    - fandogh service deploy --image archie_bot --version $CI_COMMIT_SHORT_SHA --name archie-bot --env DB_URI="app-db-uri" --env BOT_TOKEN="app-bot-token"
   when: always
