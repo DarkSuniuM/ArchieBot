@@ -8,7 +8,7 @@ from .utils import get_pending_users, unrestrict_temporary, mark_pending_deleted
 
 def delete_pending_activation_messages(context):
     """Delete pending messages from bot after a specified time."""
-    for pending in get_pending_users(10):
+    for pending in get_pending_users(900):
         unrestrict_temporary(context.bot,
                              pending.user.user_tid,
                              pending.user.group_tid,
