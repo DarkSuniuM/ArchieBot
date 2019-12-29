@@ -24,6 +24,6 @@ RUN rm temp_cron
 
 ENTRYPOINT [ "python3" ]
 
-CMD ["alembic", "upgrade", "head"]
+RUN ["alembic", "upgrade", "head"]
 
 CMD [ "app.py" ]
