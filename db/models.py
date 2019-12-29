@@ -75,7 +75,7 @@ class PendingUser(BaseModel, Base):
     create_date = Column(DateTime,
                          nullable=False, unique=False, index=False,
                          default=dt.datetime.utcnow)
-    message_tid = Column(Integer, nullable=False, unique=False, index=False)
+    message_tid = Column(Integer, nullable=True, unique=False, index=False)
     user = relationship('User', uselist=False, backref=backref('pending', uselist=False))
 
     @classmethod
