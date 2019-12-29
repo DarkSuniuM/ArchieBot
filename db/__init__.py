@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer
 
 from config import DB_URI
 
-db = create_engine(DB_URI, convert_unicode=True, connect_args=dict(use_unicode=True))
+db = create_engine(DB_URI)
 Base = declarative_base(db)
 session_factory = sessionmaker(db)
 Session = scoped_session(session_factory)
