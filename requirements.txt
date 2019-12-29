@@ -6,8 +6,8 @@ cryptography==2.6.1
 future==0.17.1
 Mako==1.1.0
 MarkupSafe==1.1.1
+mysqlclient==1.4.6
 pycparser==2.19
-PyMySQL==0.9.3
 python-dateutil==2.8.1
 python-dotenv==0.10.1
 python-editor==1.0.4
