@@ -4,9 +4,16 @@ Utils file.
 Functions that are getting used by
 direct handlers are defined here!
 """
-
+import datetime as dt
 from random import randint, sample, shuffle
+
 from telegram import InlineKeyboardButton
+
+from db import session
+from db.models import PendingUser
+
+from . import UNRESTRICTED_PERMISSIONS
+
 
 def captcha_generator(user_id, group_id):
     """Generate captcha."""
@@ -31,3 +38,31 @@ def answer_generator(correct_answer, length):
     random_generated_list.append(correct_answer)
     shuffle(random_generated_list)
     return random_generated_list
+
+
+def get_pending_users(seconds):
+    """Get pending users.
+
+    Get users who are not activated after specified time.
+    """
+    now = dt.datetime.utcnow()
+    seconds_ago = now - dt.timedelta(seconds=seconds)
+    users = session.query(PendingUser) \
+                   .filter(
+                       PendingUser.message_tid != None,
+                       PendingUser.create_date < seconds_ago
+                    ) \
+                   .all()
+    return users
+
+
+def unrestrict_temporary(bot, user_tid, group_tid, message_tid):
+    """Unrestrict user temporary and delete bot's activation message."""
+    bot.restrictChatMember(group_tid, user_tid, UNRESTRICTED_PERMISSIONS)
+    bot.deleteMessage(group_tid, message_tid)
+
+
+def mark_pending_deleted(pending_user):
+    """Mark a pending message as deleted."""
+    pending_user.message_tid = None
+    pending_user.save()
