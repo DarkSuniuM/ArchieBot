@@ -12,4 +12,5 @@ deploy_job:
     - fandogh namespace active --name=archlinux
     - fandogh image init --name archie_bot
     - fandogh image publish -v $CI_COMMIT_SHORT_SHA
-  when: manual
+    - fandogh service deploy --image archie_bot --version $CI_COMMIT_SHORT_SHA --name archie-bot
+  when: always
