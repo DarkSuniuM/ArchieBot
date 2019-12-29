@@ -22,8 +22,10 @@ RUN rm temp_cron
 
 # Do the database upgrades
 
-ENTRYPOINT [ "python3" ]
+# ENTRYPOINT [ "python3" ]
 
-RUN ["alembic", "upgrade", "head"]
+# RUN ["alembic", "upgrade", "head"]
 
-CMD [ "app.py" ]
+# CMD [ "app.py" ]
+
+CMD ["sh", "docker-entrypoint.sh"]
