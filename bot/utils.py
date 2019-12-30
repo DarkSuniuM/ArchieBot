@@ -84,13 +84,15 @@ def search(key):
         if result_e.status_code == 200 or result_p.status_code == 200:
             result_e = result_e.json()
             result_p = result_p.json()
+            k = 0
+            m = 0
             for i in result_e[1]:
-                for j in result_e[3]:
-                    if not re.search(r'\(', i):
-                        ds[i] = j
+                if not re.search(r'\(', i):
+                    ds[i] = result_e[3][k]
+                    k += 1
             for i in result_p[1]:
-                for j in result_p[3]:
-                    ds[i + ' (Persian)'] = j
+                ds[i + ' (Persian)'] = result_e[3][m]
+                m += 1
             return ds
         else:
             return False
