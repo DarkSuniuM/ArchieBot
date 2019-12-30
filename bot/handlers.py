@@ -5,14 +5,16 @@ All bot handlers are defined here!
 
 import datetime as dt
 import traceback as tb
+from uuid import uuid4
 
-from telegram import ChatPermissions, InlineKeyboardMarkup, ParseMode
+from telegram import ChatPermissions, InlineKeyboardMarkup, ParseMode, InlineQueryResultArticle, InputTextMessageContent
 
 from db import session
 from db.models import User
 
 from . import RESTRICTED_PERMISSIONS, UNRESTRICTED_PERMISSIONS
-from .utils import captcha_generator
+from .utils import captcha_generator, search
+
 
 def check_user(update, context):
     """Check if a user can send message or not."""
@@ -21,7 +23,7 @@ def check_user(update, context):
     message_time = update.message.date.timestamp()
     bot = context.bot
 
-    CONDITIONS = ( # Ignore if 
+    CONDITIONS = (  # Ignore if
         user_id == 777000,  # User is official message migrate account,
         message_time + 3 < dt.datetime.utcnow().timestamp(),  # Message older than 3 secs,
         user_id == bot.id  # User is the bot itself
@@ -84,3 +86,31 @@ def error_handler(update, context):
         raise context.error
     except Exception as error:
         tb.print_exc()
+
+
+# inline respond function
+def inlinequery(update, context):
+    query = update.inline_query.query
+    results = list()
+    sr = search(query)
+    if sr:
+        results.clear()
+        for i in sr:
+            results.append(InlineQueryResultArticle(
+                id=uuid4(),
+                title=i,
+                description=i,
+                url=sr[i],
+                thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
+                input_message_content=InputTextMessageContent('🔗 ' + i + '\n' + sr[i])))
+    else:
+        results.clear()
+        results.append(InlineQueryResultArticle(
+            id=uuid4(),
+            title='همی یافت نشد',
+            description='کلیدواژه دیگری را بیازمایید',
+            url='https://wiki.archlinux.org',
+            thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
+            input_message_content=InputTextMessageContent('🔗 wiki.archlinux.org \n 🔗 wiki.archusers.ir')))
+    # update inline respond
+    update.inline_query.answer(results)

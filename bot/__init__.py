@@ -1,6 +1,7 @@
 """Bot module main file."""
-from telegram import ChatPermissions
-from telegram.ext import CallbackQueryHandler, Filters, MessageHandler, Updater
+from telegram import ChatPermissions, InlineQueryResultArticle, InputTextMessageContent
+from telegram.ext import CallbackQueryHandler, Filters, MessageHandler, Updater, InlineQueryHandler
+
 
 from config import PROXY, TOKEN
 
@@ -15,10 +16,12 @@ dp = updater.dispatcher
 job_queue = updater.job_queue
 
 
-from .handlers import check_user, kick_bots, check_answer, error_handler
+from .handlers import check_user, kick_bots, check_answer, error_handler, inlinequery
 
 dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, kick_bots))
 dp.add_handler(MessageHandler(Filters.all, check_user))
+
+dp.add_handler(InlineQueryHandler(inlinequery))
 
 dp.add_handler(CallbackQueryHandler(check_answer))
 

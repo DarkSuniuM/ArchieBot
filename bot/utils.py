@@ -4,10 +4,11 @@ Utils file.
 Functions that are getting used by
 direct handlers are defined here!
 """
+import re
+import requests
 import datetime as dt
-from random import randint, sample, shuffle
-
 from telegram import InlineKeyboardButton
+from random import randint, sample, shuffle
 
 from db import session
 from db.models import PendingUser
@@ -66,3 +67,32 @@ def mark_pending_deleted(pending_user):
     """Mark a pending message as deleted."""
     pending_user.message_tid = None
     pending_user.save()
+
+
+# wiki search
+def search(key):
+    ds = dict()
+    try:
+        result_e = requests.get(
+            'https://wiki.archlinux.org/api.php?action=opensearch&search=' + key,
+            timeout=2
+        )
+        result_p = requests.get(
+            'https://wiki.archusers.ir/api.php?action=opensearch&search=' + key,
+            timeout=2
+        )
+        if result_e.status_code == 200 or result_p.status_code == 200:
+            result_e = result_e.json()
+            result_p = result_p.json()
+            for i in result_e[1]:
+                for j in result_e[3]:
+                    if not re.search(r'\(', i):
+                        ds[i] = j
+            for i in result_p[1]:
+                for j in result_p[3]:
+                    ds[i + ' (Persian)'] = j
+            return ds
+        else:
+            return False
+    except Exception:
+        return False
