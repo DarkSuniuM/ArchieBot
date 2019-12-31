@@ -7,13 +7,15 @@ import datetime as dt
 import traceback as tb
 from uuid import uuid4
 
-from telegram import ChatPermissions, InlineKeyboardMarkup, ParseMode, InlineQueryResultArticle, InputTextMessageContent
+from telegram import (ChatPermissions, InlineKeyboardMarkup,
+                      InlineQueryResultArticle, InputTextMessageContent,
+                      ParseMode)
 
 from db import session
 from db.models import User
 
 from . import RESTRICTED_PERMISSIONS, UNRESTRICTED_PERMISSIONS
-from .utils import captcha_generator, search
+from .utils import captcha_generator, search, is_admin
 
 
 def check_user(update, context):
@@ -26,7 +28,8 @@ def check_user(update, context):
     CONDITIONS = (  # Ignore if
         user_id == 777000,  # User is official message migrate account,
         message_time + 3 < dt.datetime.utcnow().timestamp(),  # Message older than 3 secs,
-        user_id == bot.id  # User is the bot itself
+        user_id == bot.id,  # User is the bot itself
+        is_admin(bot, group_id, user_id)  # User is admin in the chat
     )
     if any(CONDITIONS):
         return
