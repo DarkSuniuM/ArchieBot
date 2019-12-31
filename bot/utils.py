@@ -43,7 +43,7 @@ def answer_generator(correct_answer, length):
 
 def is_admin(bot, chat_id, user_id):
     """Check if user is admin in the given chat or not."""
-    chat_member = bot.get_chat_memeber(chat_id, user_id)
+    chat_member = bot.get_chat_member(chat_id, user_id)
     ADMIN_GROUPS = (ChatMember.ADMINISTRATOR, ChatMember.CREATOR)
     if chat_member.status in ADMIN_GROUPS:
         return True
