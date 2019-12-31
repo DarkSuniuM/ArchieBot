@@ -17,3 +17,5 @@ deploy_job:
     - fandogh image publish -v $CI_COMMIT_SHORT_SHA
     - fandogh service apply -f fandogh.manifest.yaml -p VERSION=$CI_COMMIT_SHORT_SHA
   when: always
+  only:
+    - master
