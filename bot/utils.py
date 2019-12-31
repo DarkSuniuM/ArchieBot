@@ -7,7 +7,7 @@ direct handlers are defined here!
 import re
 import requests
 import datetime as dt
-from telegram import InlineKeyboardButton
+from telegram import InlineKeyboardButton, ChatMember
 from random import randint, sample, shuffle
 
 from db import session
@@ -39,6 +39,15 @@ def answer_generator(correct_answer, length):
     random_generated_list.append(correct_answer)
     shuffle(random_generated_list)
     return random_generated_list
+
+
+def is_admin(bot, chat_id, user_id):
+    """Check if user is admin in the given chat or not."""
+    chat_member = bot.get_chat_memeber(chat_id, user_id)
+    ADMIN_GROUPS = (ChatMember.ADMINISTRATOR, ChatMember.CREATOR)
+    if chat_member.status in ADMIN_GROUPS:
+        return True
+    return False
 
 
 def get_pending_users(seconds):
