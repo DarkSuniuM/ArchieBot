@@ -19,7 +19,7 @@ job_queue = updater.job_queue
 from .handlers import check_user, kick_bots, check_answer, error_handler, inline_query
 
 dp.add_handler(MessageHandler(Filters.status_update.new_chat_members, kick_bots))
-dp.add_handler(MessageHandler(Filters.all, check_user))
+dp.add_handler(MessageHandler(Filters.group, check_user))
 
 dp.add_handler(InlineQueryHandler(inline_query))
 
