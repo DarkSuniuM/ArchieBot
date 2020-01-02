@@ -3,6 +3,7 @@
 All bot handlers are defined here!
 """
 
+import time
 import datetime as dt
 import traceback as tb
 from uuid import uuid4
@@ -10,6 +11,7 @@ from uuid import uuid4
 from telegram import (ChatPermissions, InlineKeyboardMarkup,
                       InlineQueryResultArticle, InputTextMessageContent,
                       ParseMode)
+from telegram.error import Conflict
 
 from db import session
 from db.models import User
@@ -87,6 +89,8 @@ def error_handler(update, context):
     try:
         session.rollback()
         raise context.error
+    except Conflict:
+        print('Warning: You have more than 1 instance of this bot/token running!')
     except Exception as error:
         tb.print_exc()
 
