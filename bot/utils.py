@@ -82,32 +82,31 @@ def mark_pending_deleted(pending_user):
     pending_user.save()
 
 
-# wiki search
-def search(key):
-    ds = dict()
-    try:
-        result_e = requests.get(
-            'https://wiki.archlinux.org/api.php?action=opensearch&search=' + key,
-            timeout=2
-        )
-        result_p = requests.get(
-            'https://wiki.archusers.ir/api.php?action=opensearch&search=' + key,
-            timeout=2
-        )
-        if result_e.status_code == 200 or result_p.status_code == 200:
-            result_e = result_e.json()
-            result_p = result_p.json()
-            k = 0
-            m = 0
-            for i in result_e[1]:
-                if not re.search(r'\(', i):
-                    ds[i] = result_e[3][k]
-                    k += 1
-            for i in result_p[1]:
-                ds[i + ' (Persian)'] = result_e[3][m]
-                m += 1
-            return ds
-        else:
-            return False
-    except Exception:
-        return False
+def search_wiki(search_query):
+    """Search within the Archlinux Wiki."""
+    results = []
+
+    if not search_query:
+        return results
+
+    english_request = requests.get(
+        f'https://wiki.archlinux.org/api.php?action=opensearch&search={search_query}',
+        timeout=2)
+    persian_request = requests.get(
+        f'https://wiki.archusers.ir/api.php?action=opensearch&search={search_query}',
+        timeout=2)
+
+    englush_results = english_request.json() if english_request.status_code == 200 else {}
+    persian_results = persian_request.json() if persian_request.status_code == 200 else {}
+
+    for i, result in enumerate(englush_results[1]):
+        if not '(' in result:
+            results.append({
+                'title': result,
+                'url': englush_results[3][i]
+            })
+
+    for i, result in enumerate(persian_results[1]):
+        results.append({'title': f'{result} (Persian)', 'url': persian_results[3][i]})
+
+    return results

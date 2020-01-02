@@ -15,7 +15,7 @@ from db import session
 from db.models import User
 
 from . import RESTRICTED_PERMISSIONS, UNRESTRICTED_PERMISSIONS
-from .utils import captcha_generator, search, is_admin
+from .utils import captcha_generator, search_wiki, is_admin
 
 
 def check_user(update, context):
@@ -92,22 +92,20 @@ def error_handler(update, context):
 
 
 # inline respond function
-def inlinequery(update, context):
+def inline_query(update, context):
     query = update.inline_query.query
-    results = list()
-    sr = search(query)
-    if sr:
-        results.clear()
-        for i in sr:
-            results.append(InlineQueryResultArticle(
-                id=uuid4(),
-                title=i,
-                description=i,
-                url=sr[i],
-                thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
-                input_message_content=InputTextMessageContent('🔗 ' + i + '\n' + sr[i])))
-    else:
-        results.clear()
+    results = search_wiki(search_query=query)
+
+    for i, result in enumerate(results):
+        results[i] = InlineQueryResultArticle(
+            id=uuid4(),
+            title=result['title'],
+            description=result.get('description', result['title']),
+            url=result['url'],
+            thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
+            input_message_content=InputTextMessageContent(f'🔗 {i}\n{result["url"]}'))
+
+    if not results:
         results.append(InlineQueryResultArticle(
             id=uuid4(),
             title='همی یافت نشد',
@@ -115,5 +113,5 @@ def inlinequery(update, context):
             url='https://wiki.archlinux.org',
             thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
             input_message_content=InputTextMessageContent('🔗 wiki.archlinux.org \n 🔗 wiki.archusers.ir')))
-    # update inline respond
+
     update.inline_query.answer(results)
