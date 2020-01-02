@@ -8,6 +8,7 @@ import re
 import requests
 import datetime as dt
 from telegram import InlineKeyboardButton, ChatMember
+from telegram.error import BadRequest
 from random import randint, sample, shuffle
 
 from db import session
@@ -69,7 +70,10 @@ def get_pending_users(seconds):
 def unrestrict_temporary(bot, user_tid, group_tid, message_tid):
     """Unrestrict user temporary and delete bot's activation message."""
     bot.restrictChatMember(group_tid, user_tid, UNRESTRICTED_PERMISSIONS)
-    bot.deleteMessage(group_tid, message_tid)
+    try:
+        bot.deleteMessage(group_tid, message_tid)
+    except BadRequest:
+        pass
 
 
 def mark_pending_deleted(pending_user):
