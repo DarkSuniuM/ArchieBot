@@ -107,7 +107,7 @@ def inline_query(update, context):
             description=result.get('description', result['title']),
             url=result['url'],
             thumb_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Archlinux-icon-crystal-64.svg/2000px-Archlinux-icon-crystal-64.svg.png",
-            input_message_content=InputTextMessageContent(f'🔗 {result["title"]}\n{result["url"]}'))
+            input_message_content=InputTextMessageContent(f'🔗 {result["title"]}\n{result["url"]}', disable_web_page_preview=True))
 
     if not results:
         results.append(InlineQueryResultArticle(
