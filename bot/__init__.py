@@ -38,4 +38,4 @@ dp.add_error_handler(error_handler)
 
 from .jobs import delete_pending_activation_messages
 
-job_queue.run_repeating(delete_pending_activation_messages, 10)
+job_queue.run_repeating(delete_pending_activation_messages, 30)
