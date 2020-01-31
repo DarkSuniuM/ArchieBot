@@ -52,7 +52,7 @@ def check_user(update, context):
         f"<pre>{captcha} = ?</pre>\n" \
         "دکمه‌ای که پاسخ صحیح بر روی آن درج شده، انتخاب کنید."
     message = bot.sendMessage(group_id, message, reply_markup=markup,
-                              parse_mode=ParseMode.HTML)
+                              disable_notification=True, parse_mode=ParseMode.HTML)
     user.set_pending(message.message_id)
     bot.deleteMessage(group_id, update.message.message_id)
 
