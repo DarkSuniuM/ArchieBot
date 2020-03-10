@@ -4,6 +4,7 @@ All bot handlers are defined here!
 """
 
 import time
+import logging
 import datetime as dt
 import traceback as tb
 from uuid import uuid4
@@ -93,6 +94,9 @@ def error_handler(update, context):
         print('Warning: You have more than 1 instance of this bot/token running!')
     except Exception as error:
         tb.print_exc()
+        logging.info(str(update))
+        logging.info(str(context))
+        
 
 
 # inline respond function

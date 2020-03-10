@@ -6,6 +6,7 @@ direct handlers are defined here!
 """
 import re
 import requests
+import logging
 import datetime as dt
 from telegram import InlineKeyboardButton, ChatMember
 from telegram.error import BadRequest
@@ -73,7 +74,7 @@ def unrestrict_temporary(bot, user_tid, group_tid, message_tid):
     try:
         bot.deleteMessage(group_tid, message_tid)
     except BadRequest:
-        pass
+        logging.info(f'Seems like message \'{message_tid}\' in chat \'{group_tid}\' already deleted!')
 
 
 def mark_pending_deleted(pending_user):
