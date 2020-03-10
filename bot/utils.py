@@ -70,9 +70,9 @@ def get_pending_users(seconds):
 
 def unrestrict_temporary(bot, user_tid, group_tid, message_tid):
     """Unrestrict user temporary and delete bot's activation message."""
-    bot.restrictChatMember(group_tid, user_tid, UNRESTRICTED_PERMISSIONS)
     deleted = 0
     try:
+        bot.restrictChatMember(group_tid, user_tid, UNRESTRICTED_PERMISSIONS)
         bot.deleteMessage(group_tid, message_tid)
     except BadRequest:
         logging.info(f'Seems like message \'{message_tid}\' in chat \'{group_tid}\' already deleted!')
