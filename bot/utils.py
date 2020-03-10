@@ -9,7 +9,7 @@ import requests
 import logging
 import datetime as dt
 from telegram import InlineKeyboardButton, ChatMember
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Unauthorized
 from random import randint, sample, shuffle
 
 from db import session
@@ -71,10 +71,20 @@ def get_pending_users(seconds):
 def unrestrict_temporary(bot, user_tid, group_tid, message_tid):
     """Unrestrict user temporary and delete bot's activation message."""
     bot.restrictChatMember(group_tid, user_tid, UNRESTRICTED_PERMISSIONS)
+    deleted = 0
     try:
         bot.deleteMessage(group_tid, message_tid)
     except BadRequest:
         logging.info(f'Seems like message \'{message_tid}\' in chat \'{group_tid}\' already deleted!')
+    except Unauthorized:
+        logging.info(f'Seems like I got kicked from chat \'{group_tid}\'!')
+        logging.info(f'Deleting pending user from chat \'{group_tid}\'!')
+        pending_user = session.query(PendingUser).filter(PendingUser.message_tid == message_tid).first()
+        session.delete(pending_user)
+        session.commit()
+        deleted = 1
+    return deleted
+    
 
 
 def mark_pending_deleted(pending_user):
