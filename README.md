@@ -21,7 +21,7 @@ A Telegram bot to prevent spamming ads by MTProto (CLI) and API Bots.
 2. Activate the virtual environment using `source venv/bin/activate`.
 3. Install requirements using `pip install -r requirements.txt`.
 4. Create a MariaDB/MySQL Database.
-5. Rename `.env.example` to `.env` and fill in the data ([Configuration](#Configuration)).
+5. Rename `.env.example` to `.env` and fill in the data ([Configuration](#configuration)).
 6. Migrate database to the latest version using `alembic upgrade head`.
 
 ### 2. Usage
@@ -37,14 +37,14 @@ You can run this bot using Docker too!
 0. Clone this repostiry
 1. Go to the project's directory
 2. Create a MariaDB/MySQL Database.
-3. Rename `.env.example` to `.env` and fill in the data ([Configuration](#Configuration)).
+3. Rename `.env.example` to `.env` and fill in the data ([Configuration](#configuration)).
 4. Build the docker image using `docker build . -t archie_bot`
 
 ### 2. Usage
 
 0. Run the container using `docker run -d archie_bot`
 
-## Configuration (.env helper)
+## Configuration
 
 |           Key           | Description                                                                                                       | Required | Example                                          |
 | :---------------------: | ----------------------------------------------------------------------------------------------------------------- | :------: | ------------------------------------------------ |
