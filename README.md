@@ -46,9 +46,9 @@ You can run this bot using Docker too!
 
 ## Configuration (.env helper)
 
-|           Key           | Description                                                                                                       | Required | Example                                        |
-| :---------------------: | ----------------------------------------------------------------------------------------------------------------- | :------: | ---------------------------------------------- |
-|        BOT_TOKEN        | Bot's token from @BotFather                                                                                       |   Yes    | 1013037333:AAF3Fi_UeaLSGzmh50h8gArsoYLWwAp-OVI |
-|        BOT_PROXY        | HTTP Proxy Leave empty to disable                                                                                 |    No    | http://127.0.0.1:1090                          |
-| BOT_RECOVERY_CHANNEL_ID | A Channel to forward recoverable messages (Bot should be admin in this channel), Leave empty to disable           |    No    | -1001368511332                                 |
-|         DB_URI          | Database URI for SQLAlchemy engine [READ MORE](https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls) |   Yes    | mysql://user:password@127.0.0.1:3306/archie_db |
+|           Key           | Description                                                                                                       | Required | Example                                          |
+| :---------------------: | ----------------------------------------------------------------------------------------------------------------- | :------: | ------------------------------------------------ |
+|        BOT_TOKEN        | Bot's token from [@BotFather](https://t.me/BotFather)                                                             |   Yes    | `1013037333:AAF3Fi_UeaLSGzmh50h8gArsoYLWwAp-OVI` |
+|        BOT_PROXY        | HTTP Proxy, Leave empty to disable                                                                                |    No    | `http://127.0.0.1:1090`                          |
+| BOT_RECOVERY_CHANNEL_ID | A Channel to forward recoverable messages (Bot should be admin in this channel), Leave empty to disable           |    No    | `-1001368511332`                                 |
+|         DB_URI          | Database URI for SQLAlchemy engine. [READ MORE](https://docs.sqlalchemy.org/en/13/core/engines.html#database-urls) |   Yes    | `mysql://user:password@127.0.0.1:3306/archie_db` |
